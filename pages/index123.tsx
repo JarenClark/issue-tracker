@@ -19,7 +19,7 @@ export default function Home() {
     }
     async function fetchIssues() {
       const resultList = await pb.collection("issues").getList(1, 50, {
-        expand: 'project'
+        expand: "project",
       });
       setIssues(resultList?.items);
     }
@@ -81,17 +81,28 @@ export default function Home() {
                 <>
                   <h3>Issues</h3>
                   <ul className="mb-4">
-                    {issues.map((item, i) => (
-                      <li key={i}>
-                        <p>
-                          <b>{item.title}</b> - {item.created}
-                        </p>
-                        <div
-                          className="text-gray-400"
-                          dangerouslySetInnerHTML={{ __html: item.description }}
-                        />
-                      </li>
-                    ))}
+                    {issues.map(
+                      (
+                        item: {
+                          title: string;
+                          created: string;
+                          description: string;
+                        },
+                        i
+                      ) => (
+                        <li key={i}>
+                          <p>
+                            <b>{item.title}</b> - {item.created}
+                          </p>
+                          <div
+                            className="text-gray-400"
+                            dangerouslySetInnerHTML={{
+                              __html: item.description,
+                            }}
+                          />
+                        </li>
+                      )
+                    )}
                   </ul>
                 </>
               )}
@@ -99,17 +110,30 @@ export default function Home() {
                 <>
                   <h3>comments</h3>
                   <ul className="mb-4">
-                    {comments.map((item, i) => (
-                      <li key={i}>
-                        <p>
-                          <b>{item.text}</b> - {item.created} on <b>{item.expand.issue.title}</b>
-                        </p>
-                        <div
-                          className="text-gray-400"
-                          dangerouslySetInnerHTML={{ __html: item.description }}
-                        />
-                      </li>
-                    ))}
+                    {comments.map(
+                      (
+                        item: {
+                          text: string;
+                          created: string;
+                          description: string;
+                          expand: { issue: { title: string } };
+                        },
+                        i
+                      ) => (
+                        <li key={i}>
+                          <p>
+                            <b>{item.text}</b> - {item.created} on{" "}
+                            <b>{item.expand.issue.title}</b>
+                          </p>
+                          <div
+                            className="text-gray-400"
+                            dangerouslySetInnerHTML={{
+                              __html: item.description,
+                            }}
+                          />
+                        </li>
+                      )
+                    )}
                   </ul>
                 </>
               )}

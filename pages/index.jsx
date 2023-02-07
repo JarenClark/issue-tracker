@@ -1,43 +1,22 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "../styles/Home.module.css";
 import pb from "../lib/pocketbase";
+import { DataContext } from '../ctx/data'
 import { Auth } from "../components";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [projects, setProjects] = useState([]);
-  const [issues, setIssues] = useState([]);
-  const [comments, setComments] = useState([]);
 
-  useEffect(() => {
-    async function fetchProjects() {
-      const resultList = await pb.collection("projects").getList(1, 5, {});
-      setProjects(resultList?.items);
-    }
-    async function fetchIssues() {
-      const resultList = await pb.collection("issues").getList(1, 50, {
-        expand: 'project'
-      });
-      setIssues(resultList?.items);
-    }
-    async function fetchComments() {
-      const resultList = await pb.collection("comments").getList(1, 50, {
-        expand: "issue",
-      });
-      setComments(resultList?.items);
-    }
-    fetchProjects();
-    fetchIssues();
-    fetchComments();
-
-    return () => {
-      console.log("this will run on unmount");
-    };
-  }, []);
-
+    const pbData = useContext(DataContext)
+    const status = [
+        'Backlog',
+        'Development',
+        'Testing',
+        'Completed'
+    ]
   return (
     <>
       <Head>
@@ -47,20 +26,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="w-screen h-screen flex justify-center items-center">
-        <Auth>
-          <div>HEADER</div>
+        {/* <Auth> */}
           <div className="flex">
-            <div>SIDEBAR</div>
-            <div>
-              Projects:
-              {projects && (
+            <div className=" h-screen w-full max-w-md border-r border-zinc-700">SIDEBAR</div>
+            <div class="flex grow flex-col">
+<div className="py-8 w-full border-b border-zinc-700"></div>
+
+              {/* {pbData.projects && (
                 <>
-                  {" "}
                   <h3>Projects</h3>
                   <ul className="mb-4">
-                    {projects.map((item, i) => (
+                    {pbData.projects.map((item, i) => (
                       <>
-                        <h3>Projects</h3>
                         <li key={i}>
                           <p>
                             <b>{item.title}</b>
@@ -76,15 +53,19 @@ export default function Home() {
                     ))}
                   </ul>
                 </>
-              )}
-              {issues && (
+              )} */}
+              <div className="p-8">
+                <h2>Issues</h2>
+
+              </div>
+              {pbData.issues && (
                 <>
                   <h3>Issues</h3>
                   <ul className="mb-4">
-                    {issues.map((item, i) => (
+                    {pbData.issues.map((item, i) => (
                       <li key={i}>
                         <p>
-                          <b>{item.title}</b> - {item.created}
+                          <b>{item.title}</b> - {item.created} - {item.status}
                         </p>
                         <div
                           className="text-gray-400"
@@ -95,11 +76,11 @@ export default function Home() {
                   </ul>
                 </>
               )}
-              {comments && (
+              {pbData.comments && (
                 <>
-                  <h3>comments</h3>
+                  <h3>Comments</h3>
                   <ul className="mb-4">
-                    {comments.map((item, i) => (
+                    {pbData.comments.map((item, i) => (
                       <li key={i}>
                         <p>
                           <b>{item.text}</b> - {item.created} on <b>{item.expand.issue.title}</b>
@@ -115,7 +96,7 @@ export default function Home() {
               )}
             </div>
           </div>
-        </Auth>
+        {/* </Auth> */}
       </div>
     </>
   );
