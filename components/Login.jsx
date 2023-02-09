@@ -1,61 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import supabase from "../lib/supabase";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { signIn } from "../rdx/authSlice";
 
 const Login = (props) => {
+  const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(false);
-  // const [method, setMethod] = useState("login");
-  const { register, handleSubmit, reset, error } = useForm();
 
-  async function onSubmit(formdata) {
-    setIsLoading(true);
-    login(formdata);
-    reset();
+  const [formInput, setFormInput] = useState({
+    email: "",
+    password: "",
+  });
+
+  function submit(e) {
+    console.log("you hit submit");
+    dispatch(signIn(formInput));
+    e.preventDefault();
   }
 
-  async function login(formdata) {
-    try {
-      console.log(formdata.email, formdata.password);
-
-      const { data, error } = await supabase.auth.signUp({
-        email: formdata.email,
-        password: formdata.password,
-      });
-
-      console.log("data:", data);
-      console.log("error:", error);
-    } catch (error) {
-      alert(error);
-    }
-
-    setIsLoading(false);
-  }
+  useEffect(() => {
+    console.log(`formInput ==`, { ...formInput });
+  }, [formInput]);
 
   return (
     <div>
-      <h3>Login</h3>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <fieldset>
           <div className="mb-4">
             <label htmlFor="email">Email</label>
             <input
-              {...register("email")}
+              onChange={(e) =>
+                setFormInput({
+                  ...formInput,
+                  email: e.target.value,
+                })
+              }
               type="email"
-              className="text-black flex mt-1 rounded-md p-1"
+              className="text-white flex mt-1 rounded-md p-1"
             />
           </div>
 
           <div className="mb-4">
             <label htmlFor="password">Password</label>
             <input
-              {...register("password")}
+              onChange={(e) =>
+                setFormInput({
+                  ...formInput,
+                  password: e.target.value,
+                })
+              }
               type="password"
-              className="text-black flex mt-1 rounded-md p-1"
+              className="text-white flex mt-1 rounded-md p-1"
             />
           </div>
         </fieldset>
         <button
           disabled={isLoading}
+          onClick={submit}
           type="submit"
           className="mt-4 py-2 px-8 flex rounded-md bg-indigo-600 "
         >
@@ -67,3 +70,32 @@ const Login = (props) => {
 };
 
 export default Login;
+
+//      {/* {loginError && <p className="text-red-500">{loginError.toString()}</p>} */}
+
+// const [isLoading, setIsLoading] = useState(false);
+// const { register, handleSubmit, reset, error } = useForm();
+// const [loginError, setLoginError] = useState("");
+
+// async function onSubmit(formdata) {
+//   setIsLoading(true);
+//   login(formdata);
+//   reset();
+// }
+
+// async function login(formdata) {
+//   try {
+//     const { data, error } = await supabase.auth.signInWithPassword({
+//       email: formdata.email,
+//       password: formdata.password,
+//     });
+
+//     if (error) {
+//       setLoginError(error);
+//     }
+//   } catch (error) {
+//     alert(error);
+//   }
+
+//   setIsLoading(false);
+// }

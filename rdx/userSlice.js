@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import { supabase } from '../lib/supabase'
 
 const slice = createSlice({
     name: "user",
