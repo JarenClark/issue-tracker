@@ -1,25 +1,34 @@
 import "../styles/globals.css";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import type { AppProps } from "next/app";
-import { AuthContextProvider } from "../ctx/auth";
-import { DataContextProvider } from "../ctx/data";
 import { Provider } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { createApi, fakeBaseQuery, ApiProvider } from "@reduxjs/toolkit/query/react";
 
 // Reducers
 import authReducer from "../rdx/authSlice";
-import issueReducer from "../rdx/issueSlice";
+import commentsReducer from "../rdx/commentSlice";
+import issuesReducer from "../rdx/issueSlice";
+import projectsReducer from "../rdx/projectSlice";
+import supabase from '../lib/supabase'
+
 const reducer = combineReducers({
-  auth: authReducer,
-  issue: issueReducer,
+  comments: commentsReducer,
+  issues: issuesReducer,
+  projects: projectsReducer,
 });
 
 // Store
 const store = configureStore({
   reducer: reducer,
 });
+// useEffect(() => {
+//   dispatch(fetchProjects());
+//   dispatch(fetchIssues());
+//   dispatch(fetchComments());
+// }, []);
 
 export default function App({ Component, pageProps }: AppProps) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
