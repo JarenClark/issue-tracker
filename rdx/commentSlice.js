@@ -7,7 +7,7 @@ const initialState = {
 }
 
 export const fetchComments = createAsyncThunk('comments/fetchComments', async () => {
-    const { data, error } = await supabase.from("comments").select('id,text');
+    const { data, error } = await supabase.from("comments").select('id,text,created_at,created_by,parent_comment,related_issue');
     return data
 })
 
