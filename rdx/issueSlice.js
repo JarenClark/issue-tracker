@@ -7,11 +7,11 @@ const initialState = {
     error: ''
 }
 
+// async functions
 export const fetchIssues = createAsyncThunk('issues/fetchIssues', async () => {
-    const { data, error } = await supabase.from("issues").select('id,title,description');
+    const { data, error } = await supabase.from("issues").select('id, title, created_at, description, related_project, status, severity');
     return data
 })
-
 
 
 const slice = createSlice({

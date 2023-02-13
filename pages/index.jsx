@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../rdx/projectSlice";
 import { fetchComments } from "../rdx/commentSlice";
 import { fetchIssues } from "../rdx/issueSlice";
+import { fetchUsers } from "../rdx/userSlice";
 // layout
 import { Layout } from "../components";
 import Link from "next/link";
+import Head from "next/head";
 
 function Home() {
   const user = useUser();
@@ -19,18 +21,24 @@ function Home() {
   const allState = useSelector((state) => state);
 
   useEffect(() => {
-    if (allState.issues.issues.length == 0) {
-      dispatch(fetchIssues());
+    if (user) {
+      if (allState.issues.issues.length == 0) {
+        dispatch(fetchIssues());
+      }
+      if (allState.projects.projects.length == 0) {
+        dispatch(fetchProjects());
+      }
+      if (allState.comments.comments.length == 0) {
+        dispatch(fetchComments());
+      }
+      if (allState.users?.users.length == 0) {
+        dispatch(fetchUsers());
+      }
     }
-    if (allState.projects.projects.length == 0) {
-      dispatch(fetchProjects());
-    }
-    if (allState.comments.comments.length == 0) {
-      dispatch(fetchComments());
-    }
-  }, []);
+  }, [user]);
+
   useEffect(() => {
-    console.log({ ...allState });
+    console.log(`our state is `,{ ...allState });
   }, [allState]);
 
   if (!user) {
@@ -46,18 +54,22 @@ function Home() {
   }
   return (
     <>
+    <Head>
+      <title>Home</title>
+    </Head>
       <Layout>
+
         <div className="p-8">
           <div>Projects</div>
 
           {allState.projects.projects && (
             <ul>
               {allState.projects.projects.map((item, i) => (
-              <li key={i}>
-                <Link href={`/projects/${item.id}`}>
-                  <span className="hover:text-jade">{item.title}</span>
-                </Link>
-              </li>
+                <li key={i}>
+                  <Link href={`/projects/${item.id}`}>
+                    <span className="hover:text-jade">{item.title}</span>
+                  </Link>
+                </li>
               ))}
             </ul>
           )}
@@ -66,11 +78,11 @@ function Home() {
           {allState.issues.issues && (
             <ul>
               {allState.issues.issues.map((item, i) => (
-              <li key={i}>
-                <Link href={`/issues/${item.id}`}>
-                  <span className="hover:text-jade">{item.title}</span>
-                </Link>
-              </li>
+                <li key={i}>
+                  <Link href={`/issues/${item.id}`}>
+                    <span className="hover:text-jade">{item.title}</span>
+                  </Link>
+                </li>
               ))}
             </ul>
           )}
@@ -79,12 +91,26 @@ function Home() {
           {allState.comments.comments && (
             <ul>
               {allState.comments.comments.map((item, i) => (
-              <li key={i}>
-                {item.text}
-                {/* <Link href={`/projects/${item.id}`}>
+                <li key={i}>
+                  {item.text}
+                  {/* <Link href={`/projects/${item.id}`}>
                   <span className="hover:text-jade">{item.title}</span>
                 </Link> */}
-              </li>
+                </li>
+              ))}
+            </ul>
+          )}
+          <br />
+          <div>Users</div>
+          {allState.users.users && (
+            <ul>
+              {allState.users.users.map((item, i) => (
+                <li key={i}>
+                  {item.first_name} {item.last_name}
+                  {/* <Link href={`/projects/${item.id}`}>
+                  <span className="hover:text-jade">{item.title}</span>
+                </Link> */}
+                </li>
               ))}
             </ul>
           )}

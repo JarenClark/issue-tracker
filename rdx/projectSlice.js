@@ -35,11 +35,6 @@ const slice = createSlice({
 
     },
     reducers: {
-        getProjects: (state, actions) => {
-            // const { data } = actions.payload
-            // console.log('actions.payload are', actions)
-            // state = data
-        },
         createProject: (state, actions) => { },
         updateProject: (state, actions) => { }
     }

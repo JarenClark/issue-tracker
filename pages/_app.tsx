@@ -12,12 +12,14 @@ import authReducer from "../rdx/authSlice";
 import commentsReducer from "../rdx/commentSlice";
 import issuesReducer from "../rdx/issueSlice";
 import projectsReducer from "../rdx/projectSlice";
+import usersReducer from "../rdx/userSlice"
 import supabase from '../lib/supabase'
 
 const reducer = combineReducers({
   comments: commentsReducer,
   issues: issuesReducer,
   projects: projectsReducer,
+  users: usersReducer
 });
 
 // Store
