@@ -9,7 +9,7 @@ const initialState = {
 
 // async functions
 export const fetchIssues = createAsyncThunk('issues/fetchIssues', async () => {
-    const { data, error } = await supabase.from("issues").select('id, title, created_at, description, related_project, status, severity');
+    const { data, error } = await supabase.from("issues").select('id, title, created_at, description, related_project, status, severity, due_date');
     return data
 })
 

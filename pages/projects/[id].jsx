@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Layout, ProtectedRoute } from "../../components";
+import { Layout, ProtectedRoute, SeverityBadge } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { fetchProjects } from "../../rdx/projectSlice";
 import format from "date-fns/format";
 import Link from "next/link";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowTopRightOnSquareIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 function ProjectPage() {
   const [loading, setLoading] = useState(true);
 
@@ -29,11 +32,10 @@ function ProjectPage() {
 
   const tableCols = [
     "Item",
-    "Assigned To",
+    "Person",
     "Status",
     "Severity",
-    "Priority",
-    "Created At",
+    "Due Date",
   ];
 
   return (
@@ -52,17 +54,21 @@ function ProjectPage() {
                     <div className="my-8">
                       <table className="table-auto">
                         <thead>
-                          <td></td>
-                          {tableCols.map((item, i) => (
-                            <td
-                              className={`text-center border border-zinc-700 py-2 px-6 ${
-                                i == 0 && `rounded-l-lg`
-                              } ${i + 1 == tableCols.length && `rounded-r-lg`}`}
-                              key={i}
-                            >
-                              {item}
-                            </td>
-                          ))}
+                          <tr>
+                            <td></td>
+                            {tableCols.map((item, i) => (
+                              <td
+                                className={`text-center border border-zinc-700 py-2 px-6 ${
+                                  i == 0 && `rounded-l-lg`
+                                } ${
+                                  i + 1 == tableCols.length && `rounded-r-lg`
+                                }`}
+                                key={i}
+                              >
+                                {item}
+                              </td>
+                            ))}
+                          </tr>
                         </thead>
                         <tbody>
                           {issues.map((item, i) => (
@@ -78,16 +84,21 @@ function ProjectPage() {
                               </td>
                               {[
                                 item.title,
-                                "",
+                                <>
+                                  <div className="w-6 h-6 mx-auto">
+                                    <UserCircleIcon />
+                                  </div>
+                                </>,
                                 item.status,
-                                item.severity,
-                                item.priority,
-                                format(new Date(item.created_at), "MM/dd/yyyy"),
+                                <>
+                                  <SeverityBadge severity={item.severity} />
+                                </>,
+                                format(new Date(item.due_date), "MM/dd/yyyy"),
                               ].map((cell, j) => (
                                 <td
                                   key={j}
                                   className={`${
-                                    j == 0 ? `text-left` : `text-center`
+                                    j == 1 ? `text-left` : `text-center`
                                   } px-6 py-2 border border-zinc-700`}
                                 >
                                   {cell}
@@ -143,10 +154,10 @@ function ProjectPage() {
                   )} */}
                 </div>
 
-                <div className="p-8 border-l h-full border-zinc-700">
+                {/* <div className="p-8 border-l h-full border-zinc-700">
                   <h3 className="font-bold">Recent Activity</h3>
                   <ul></ul>
-                </div>
+                </div> */}
               </div>
             </>
           ) : (

@@ -14,9 +14,12 @@ import {
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
-function Layout({ title, children }) {
+function Layout({ title, children, rightSidebarContent }) {
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [projectsCollapsed, setProjectsCollapsed] = useState(false);
+const [rightSidebarCollapsed, setrightSidebarCollapsed] = useState(true)
+
   const router = useRouter();
 
   const user = useUser();
@@ -33,9 +36,9 @@ function Layout({ title, children }) {
   return (
     <>
       <Head>
-        <title>{title ?? "App"}</title>
+        <title>{title ?? "Tasktracker"}</title>
       </Head>
-      <div className="flex w-screen h-screen">
+      <div className="flex w-screen h-screen relative">
         {/* SIDEBAR */}
         <div className="w-full max-w-xs flex flex-col h-screen justify-between border-r border-zinc-700">
           <div>
@@ -113,6 +116,7 @@ function Layout({ title, children }) {
             </div>
           )}
         </div>
+        {/** MAIN CONTENT */}
         <div className="flex flex-col grow">
           {/* HEADER */}
           <div className="w-full border-b h-24 border-zinc-700 p-8 flex items-center justify-between">
@@ -129,6 +133,20 @@ function Layout({ title, children }) {
           {/* MAIN */}
           <div>{children}</div>
         </div>
+        {!rightSidebarCollapsed &&
+            <div className="absolute inset-0 backdrop-blur-lg"></div>
+          }
+        <div className={`${rightSidebarCollapsed ? `translate-x-full` : `translate-x-0`} absolute top-0 h-screen right-0 w-screen max-w-lg border-l border-zinc-700 bg-[#191c34]`}>
+          <div className="h-24 flex justify-between items-center px-8 border-b border-zinc-700">
+           
+            <p>
+              Sidebar Title
+            </p>
+            <button onClick={() => setrightSidebarCollapsed(true)}> close</button>
+          </div>
+        </div>
+
+
       </div>
     </>
   );

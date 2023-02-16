@@ -11,12 +11,35 @@ export const fetchComments = createAsyncThunk('comments/fetchComments', async ()
     return data
 })
 
+export const postNewComment = createAsyncThunk('comments/postNewComment', async (commentData) => {
+    const { data, error } = await supabase.from("comments").insert([commentData]);
+    // console.log(data)
+    return data
+})
+
 
 const slice = createSlice({
     name: "comments",
     initialState,
     extraReducers: (builder) => {
 
+        // post new comment
+        builder.addCase(postNewComment.pending, (state) => {
+            state.loading = true
+        })
+
+        builder.addCase(postNewComment.fulfilled, (state, action) => {
+            state.loading = false
+            state.comments = action.payload
+            state.error = ''
+        })
+        builder.addCase(postNewComment.rejected, (state, action) => {
+            state.loading = false
+            state.comments = [...state.comments, action.payload]
+            state.error = action?.error?.message ?? 'Something went wrong'
+        })
+
+        // fetch comments
         builder.addCase(fetchComments.pending, (state) => {
             state.loading = true
         })
