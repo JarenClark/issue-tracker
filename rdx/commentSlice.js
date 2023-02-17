@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import supabase from "../lib/supabase";
+import { corsHeaders } from '../utils/cors'
+
+
 const initialState = {
     loading: false,
     comments: [],
@@ -12,7 +15,14 @@ export const fetchComments = createAsyncThunk('comments/fetchComments', async ()
 })
 
 export const postNewComment = createAsyncThunk('comments/postNewComment', async (commentData) => {
-    const { data, error } = await supabase.from("comments").insert([commentData]);
+    try {
+        const { data } = await supabase.from("comments").insert([commentData]);
+        return data
+    }
+    catch(error){
+        alert(error)
+    }
+    
     // console.log(data)
     return data
 })
@@ -23,21 +33,6 @@ const slice = createSlice({
     initialState,
     extraReducers: (builder) => {
 
-        // post new comment
-        builder.addCase(postNewComment.pending, (state) => {
-            state.loading = true
-        })
-
-        builder.addCase(postNewComment.fulfilled, (state, action) => {
-            state.loading = false
-            state.comments = action.payload
-            state.error = ''
-        })
-        builder.addCase(postNewComment.rejected, (state, action) => {
-            state.loading = false
-            state.comments = [...state.comments, action.payload]
-            state.error = action?.error?.message ?? 'Something went wrong'
-        })
 
         // fetch comments
         builder.addCase(fetchComments.pending, (state) => {
@@ -52,6 +47,22 @@ const slice = createSlice({
         builder.addCase(fetchComments.rejected, (state, action) => {
             state.loading = false
             state.comments = []
+            state.error = action?.error?.message ?? 'Something went wrong'
+        })
+
+        // post new comment
+        builder.addCase(postNewComment.pending, (state) => {
+            state.loading = true
+        })
+
+        builder.addCase(postNewComment.fulfilled, (state, action) => {
+            state.loading = false
+            state.comments = [...state.comments, action.payload]
+            state.error = ''
+        })
+        builder.addCase(postNewComment.rejected, (state, action) => {
+            state.loading = false
+            state.comments = state.comments
             state.error = action?.error?.message ?? 'Something went wrong'
         })
 

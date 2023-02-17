@@ -28,14 +28,14 @@ function IssuePage() {
   );
 
   const comments = useSelector((state) =>
-    state.comments.comments.filter((x) => x.related_issue == router.query.id)
+    state.comments?.comments?.filter((x) => x.related_issue == router.query.id)
   );
 
   const related_project = useSelector((state) =>
     state.projects.projects.find((x) => x.id == issue.related_project)
   );
 
-  async function postNewComment(data) {
+  async function postNewCommentFromInputForm(data) {
     console.log(data);
     let obj = {
       text: data.text,
@@ -100,7 +100,7 @@ function IssuePage() {
                       </button>
                     </div>
                   )}
-                  <form onSubmit={handleSubmit(postNewComment)}>
+                  <form onSubmit={handleSubmit(postNewCommentFromInputForm)}>
                     <input
                       type="text"
                       {...register("text")}

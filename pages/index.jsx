@@ -28,7 +28,7 @@ function Home() {
       if (allState.projects.projects.length == 0) {
         dispatch(fetchProjects());
       }
-      if (allState.comments.comments.length == 0) {
+      if (allState.comments?.comments?.length == 0) {
         dispatch(fetchComments());
       }
       if (allState.users?.users.length == 0) {
